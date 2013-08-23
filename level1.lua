@@ -28,7 +28,6 @@ local function onPlayBtnRelease()
 	return true	-- indicates successful touch
 end
 
---lastY = 100, lastCrateY = 0
 -----------------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 -- 
