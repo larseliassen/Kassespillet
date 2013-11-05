@@ -181,7 +181,7 @@ function countdown()
 				crates:insert (crate)
 				physics.setGravity( 5, 10 )
 	  	    else
-	  	    	displayWin.text = "YOU LOOSE"
+	  	    	displayWin.text = "YOU LOSE"
 	  	    	countedDown = true
 	  	    	print("SCORE 2", score, "HS", highscore)
 	  	    	if(score > highscore) then
