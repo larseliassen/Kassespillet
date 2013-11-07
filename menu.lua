@@ -7,6 +7,7 @@
 local storyboard = require( "storyboard" )
 local scene = storyboard.newScene()
 local skies = display.newGroup()
+
 -- include Corona's "widget" library
 local widget = require "widget"
 
@@ -27,69 +28,54 @@ bg_low:setReferencePoint( display.BottomLeftReferencePoint)
 bg_low.x, bg_low.y = 0, display.contentHeight
 skies:insert( bg_low)
 
-	
 
-local background1 = display.newImage( "background.png")
-background1:setReferencePoint( display.BottomLeftReferencePoint )
-background1.x, background1.y = display.contentWidth, 75
-background1.speed = 0.5
+
+local function loadBackground(filename, xMulti, y, speed) 
+	local background = display.newImage(filename)
+	background:setReferencePoint( display.BottomLeftReferencePoint )
+	background.x, background.y = display.contentWidth*xMulti, y
+	background.speed = speed
+	return background
+end
+
+local background1 = loadBackground("background.png", 1, 75, 0.5)
 skies:insert( background1 )
---background1:toBack()
-
-
-local background1_2 = display.newImage( "background.png")
-background1_2:setReferencePoint( display.BottomLeftReferencePoint )
-background1_2.x, background1.y = display.contentWidth*2, 75
-background1_2.speed = 0.5
---background1_2:toBack()
+local background1_2 = loadBackground("background.png", 2, 75, 0.5)
 skies:insert( background1_2 )
---background1_2:toBack()
 
-local background2 = display.newImage( "background2.png")
-background2:setReferencePoint( display.BottomLeftReferencePoint )
-background2.x, background2.y = display.contentWidth*2, 420
-background2.speed = 1
+local background2 = loadBackground("background2.png", 1, 420, 1)
 skies:insert( background2 )
----background2:toBack()
-
-local background2_2 = display.newImage( "background2.png")
-background2_2:setReferencePoint( display.BottomLeftReferencePoint )
-background2_2.x, background2_2.y = display.contentWidth, 420
-background2_2.speed = 1
+local background2_2 = loadBackground("background2.png", 2, 420, 1)
 skies:insert( background2_2 )
---background2_2:toBack()
 
-local background3 = display.newImage( "background3.png")
-background3:setReferencePoint( display.BottomLeftReferencePoint )
-background3.x, background3.y = -display.contentWidth*2, 150
-background3.speed = -1
+local background3 = loadBackground("background3.png", -2, 150, -1)
 skies:insert( background3 )
---background3:toBack()
-
-local background3_2 = display.newImage( "background3.png")
-background3_2:setReferencePoint( display.BottomLeftReferencePoint )
-background3_2.x, background3_2.y = -display.contentWidth, 150
-background3_2.speed = -1
+local background3_2 = loadBackground("background3.png", -1, 150, -1)
 skies:insert( background3_2 )
---background3_2:toBack()
+
+
 
 local titleLogo = display.newImageRect( "logo.png", 229, 84)
 titleLogo:setReferencePoint( display.CenterReferencePoint )
 titleLogo.x = display.contentWidth * 0.5
 titleLogo.y = 200
 
-	crate = display.newImageRect( "crate.png", 100, 100 )	
-			crate.x, crate.y = 160, -100
-			physics.addBody( crate, { density=10.5, friction=0.3, bounce=0.0 } )
-			skies:insert (crate)
-			crate:toFront()
-			physics.start()
+local hackatonEdition = display.newImageRect( "hackatonedition.png", 320, 120)
+hackatonEdition:setReferencePoint( display.CenterReferencePoint )
+hackatonEdition.x = display.contentWidth * 0.4
+hackatonEdition.y = -10
+physics.addBody( hackatonEdition , { density=100, friction=0, bounce=0})
 
-	local grassShape = { -160,-10, 160,-10, 160,15, -160,15 }
-	physics.addBody( bg_low, "static", { friction=0.3, shape=grassShape } )
+--crate = display.newImageRect( "crate.png", 100, 100 )	
+--crate.x, crate.y = 160, -100
+--physics.addBody( crate, { density=10.5, friction=0.3, bounce=0.0 } )
+--skies:insert (crate)
+--crate:toFront()
 
---skies:insert(titleLogo)
---titleLogo:toFront()
+physics.start()
+
+local grassShape = { -160,-10, 160,-10, 160,15, -160,15 }
+physics.addBody( bg_low, "static", { friction=0.3, shape=grassShape } )
 
 --------------------------------------------
 
@@ -121,27 +107,19 @@ end
 function scene:createScene( event )
 	local group = self.view
 
-
-
-	-- display a background image
-
-	
-	-- create/position logo/title image on upper-half of the screen
-
-	
 	--create a widget button (which will loads level1.lua on release)
 	playBtn = widget.newButton{
 		label="GO CRATING ",
 		labelColor = { default={241,55,40,255}, over={128} },
-		--defaultFile="button.png",
-		--overFile="button-over.png",
 		width=154, height=40,
 		onRelease = onPlayBtnRelease	-- event listener function
 	}
 	playBtn:setReferencePoint( display.CenterReferencePoint )
 	playBtn.x = display.contentWidth*0.5
 	playBtn.y = display.contentHeight - 180
-	
+
+	local buttonShape = { -120,50, 150,60, 150,150, -120,150 }
+	physics.addBody( playBtn, "static", { friction=0.3, shape=buttonShape } )
 	
 	-- all display objects must be inserted into group
 	group:insert( background )
@@ -176,36 +154,20 @@ function scene:destroyScene( event )
 	end
 end
 
+local function updateBackground(background)
+	background.x = background.x - background.speed*0.5
+	if(background.x < -display.contentWidth) then
+		background.x = display.contentWidth
+	end
+end
+
 function updateBackgrounds()
-	background1.x = background1.x - background1.speed*0.5
-	if(background1.x < -display.contentWidth) then
-		background1.x = display.contentWidth
-	end
-	--background1:toBack()
-	background1_2.x = background1_2.x - background1_2.speed*0.5
-	if(background1_2.x < -display.contentWidth) then
-		background1_2.x = display.contentWidth
-	end
-	--background1_2:toBack()
-	background2.x = background2.x - background2.speed*0,5
-	if(background2.x < -display.contentWidth) then
-		background2.x = display.contentWidth
-	end
-	background2_2.x = background2_2.x - background2_2.speed*0.5
-	if(background2_2.x < -display.contentWidth) then
-		background2_2.x = display.contentWidth
-	end
-	--background2_2:toBack()
-	background3.x = background3.x - background3.speed*0.5
-	if(background3.x > display.contentWidth) then
-		background3.x = -display.contentWidth
-	end
-	--background3:toBack()
-	background3_2.x = background3_2.x - background3_2.speed*0.5
-	if(background3_2.x > display.contentWidth) then
-		background3_2.x = -display.contentWidth
-	end
-	--background3_2:toBack()
+	updateBackground(background1)
+	updateBackground(background1_2)
+	updateBackground(background2)
+	updateBackground(background2_2)
+	updateBackground(background3)
+	updateBackground(background3_2)
 	titleLogo:toFront()
 end
 
