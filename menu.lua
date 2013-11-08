@@ -60,11 +60,11 @@ titleLogo:setReferencePoint( display.CenterReferencePoint )
 titleLogo.x = display.contentWidth * 0.5
 titleLogo.y = 200
 
-local hackatonEdition = display.newImageRect( "hackatonedition.png", 320, 120)
-hackatonEdition:setReferencePoint( display.CenterReferencePoint )
-hackatonEdition.x = display.contentWidth * 0.4
-hackatonEdition.y = -10
-physics.addBody( hackatonEdition , { density=100, friction=0, bounce=0})
+--local hackatonEdition = display.newImageRect( "hackatonedition.png", 320, 120)
+--hackatonEdition:setReferencePoint( display.CenterReferencePoint )
+--hackatonEdition.x = display.contentWidth * 0.5
+--hackatonEdition.y = -10
+--physics.addBody( hackatonEdition , { density=100, friction=0, bounce=0})
 
 --crate = display.newImageRect( "crate.png", 100, 100 )	
 --crate.x, crate.y = 160, -100
@@ -118,13 +118,15 @@ function scene:createScene( event )
 	playBtn.x = display.contentWidth*0.5
 	playBtn.y = display.contentHeight - 180
 
-	local buttonShape = { -120,50, 150,60, 150,150, -120,150 }
-	physics.addBody( playBtn, "static", { friction=0.3, shape=buttonShape } )
+	--local buttonShape = { -120,50, 150,60, 150,150, -120,150 }
+	--physics.addBody( playBtn, "static", { friction=0.3, shape=buttonShape } )
 	
 	-- all display objects must be inserted into group
 	group:insert( background )
 	group:insert( titleLogo )
 	group:insert( playBtn )
+	--group:insert( hackatonEdition )
+
 end
 
 -- Called immediately after scene has moved onscreen:
@@ -146,8 +148,7 @@ end
 
 -- If scene's view is removed, scene:destroyScene() will be called just prior to:
 function scene:destroyScene( event )
-	local group = self.view
-	
+	hackatonEdition:removeSelf()
 	if playBtn then
 		playBtn:removeSelf()	-- widgets must be manually removed
 		playBtn = nil
